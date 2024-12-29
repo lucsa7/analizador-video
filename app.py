@@ -1,27 +1,25 @@
 import streamlit as st
-import imageio
-from PIL import Image
+from moviepy.editor import VideoFileClip
 import tempfile
 
 def main():
     st.title("Analizador de Video por Fotogramas")
 
     # Subir el archivo de video
-    video_file = st.file_uploader("Carga un archivo de video", type=["mp4", "avi", "mov"])
+    video_file = st.file_uploader("Carga un archivo de video", type=["mp4", "avi", "mov", "mpeg4"])
 
     if video_file:
-        # Crear un archivo temporal para almacenar el video
-        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
-            temp_file.write(video_file.read())
-            temp_file_path = temp_file.name
-
-        # Leer el video con imageio
         try:
-            video = imageio.get_reader(temp_file_path, format="ffmpeg")
-            meta = video.get_meta_data()
-            fps = meta['fps']
-            frame_count = int(meta['nframes'])
-            duration = frame_count / fps
+            # Crear un archivo temporal para guardar el video
+            with tempfile.NamedTemporaryFile(delete=False) as temp_video:
+                temp_video.write(video_file.read())
+                temp_video_path = temp_video.name
+
+            # Procesar el video con moviepy
+            clip = VideoFileClip(temp_video_path)
+            fps = clip.fps
+            frame_count = int(clip.duration * fps)
+            duration = clip.duration
 
             st.write(f"**Frames por segundo (FPS):** {fps}")
             st.write(f"**Número total de fotogramas:** {frame_count}")
@@ -31,9 +29,9 @@ def main():
             frame_idx = st.slider("Selecciona un fotograma", 0, frame_count - 1, 0)
 
             # Obtener y mostrar el fotograma seleccionado
-            frame = video.get_data(frame_idx)
-            frame_image = Image.fromarray(frame)
-            st.image(frame_image, caption=f"Fotograma {frame_idx}")
+            frame_time = frame_idx / fps
+            frame = clip.get_frame(frame_time)
+            st.image(frame, caption=f"Fotograma {frame_idx}")
 
             # Seleccionar fotogramas clave
             st.write("### Selecciona los fotogramas clave")
@@ -50,10 +48,12 @@ def main():
                 st.write(f"**Tiempo de contacto inicial:** {tiempo_contacto:.2f} segundos")
                 st.write(f"**Tiempo de vuelo:** {tiempo_vuelo:.2f} segundos")
                 st.write(f"**Altura estimada del salto:** {altura:.2f} metros")
+
         except Exception as e:
             st.error(f"Error al procesar el video: {e}")
 
 if __name__ == "__main__":
     main()
+
 
 
