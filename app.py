@@ -70,9 +70,6 @@ def main():
                 # Cálculo de potencia promedio
                 potencia_promedio = fuerza_media * velocidad_pico  # Watts
 
-                # Relación tiempo contacto/vuelo
-                relacion_contacto_vuelo = tiempo_contacto / tiempo_vuelo
-
                 # Mostrar resultados
                 st.markdown("### 📈 Resultados")
                 st.write(f"- **Tiempo de contacto inicial:** {tiempo_contacto:.2f} segundos")
@@ -81,15 +78,13 @@ def main():
                 st.write(f"- **Velocidad pico en el despegue:** {velocidad_pico:.2f} m/s")
                 st.write(f"- **Fuerza media durante el contacto:** {fuerza_media:.2f} N")
                 st.write(f"- **Potencia promedio durante el salto:** {potencia_promedio:.2f} W")
-                st.write(f"- **Relación tiempo contacto/vuelo:** {relacion_contacto_vuelo:.2f}")
 
                 # Exportar resultados
                 st.markdown("### 💾 Exportar resultados")
                 data = {
                     "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad pico (m/s)",
-                                "Fuerza media (N)", "Potencia promedio (W)", "Relación contacto/vuelo"],
-                    "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_pico, fuerza_media, potencia_promedio,
-                              relacion_contacto_vuelo]
+                                "Fuerza media (N)", "Potencia promedio (W)"],
+                    "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_pico, fuerza_media, potencia_promedio]
                 }
                 df = pd.DataFrame(data)
                 st.download_button(
@@ -99,31 +94,32 @@ def main():
                     mime="text/csv"
                 )
 
-                # Crear un gráfico de resultados
-                st.markdown("### 📊 Gráfico de Resultados")
-                fig, ax = plt.subplots()
-                ax.bar(df["Métrica"], df["Valor"], color=["#FF5733", "#33FF57", "#3357FF", "#FF33FF", "#33FFFF", "#FFA533", "#33AFFF"])
-                ax.set_ylabel("Valores")
-                ax.set_title("Resultados del Análisis de Salto")
-                plt.xticks(rotation=45, ha="right")
-                st.pyplot(fig)
+                # Crear gráficos individuales para cada métrica
+                st.markdown("### 📊 Gráficos Individuales de Resultados")
 
-                # Exportar el gráfico
-                buf = io.BytesIO()
-                plt.savefig(buf, format="png", bbox_inches="tight")
-                buf.seek(0)
-                st.download_button(
-                    label="Descargar gráfico como PNG",
-                    data=buf,
-                    file_name="grafico_resultados.png",
-                    mime="image/png"
-                )
+                metrics = {
+                    "Tiempo de contacto (s)": tiempo_contacto,
+                    "Tiempo de vuelo (s)": tiempo_vuelo,
+                    "Altura (m)": altura,
+                    "Velocidad pico (m/s)": velocidad_pico,
+                    "Fuerza media (N)": fuerza_media,
+                    "Potencia promedio (W)": potencia_promedio
+                }
+
+                for metric, value in metrics.items():
+                    st.markdown(f"#### {metric}")
+                    fig, ax = plt.subplots()
+                    ax.bar([metric], [value], color="#FF5733")
+                    ax.set_ylabel("Valor")
+                    ax.set_title(metric)
+                    st.pyplot(fig)
 
         except Exception as e:
             st.error(f"⚠️ Error al procesar el video: {e}")
 
 if __name__ == "__main__":
     main()
+
 
 
 
