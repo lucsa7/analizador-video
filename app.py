@@ -36,7 +36,7 @@ def main():
             # Obtener y mostrar el fotograma seleccionado
             frame_time = frame_idx / fps
             frame = clip.get_frame(frame_time)
-            st.image(frame, caption=f"Fotograma {frame_idx}", use_column_width=True)
+            st.image(frame, caption=f"Fotograma {frame_idx}", use_container_width=True)
 
             # Seleccionar fotogramas clave
             st.markdown("### 📌 Selección de fotogramas clave")
@@ -70,21 +70,7 @@ def main():
                     mime="text/csv"
                 )
 
-            # Explicación de la lógica
-            st.markdown("### 📚 Lógica de cálculo")
-            st.markdown("""
-            La altura del salto se calcula utilizando la fórmula de la caída libre:
             
-            \[
-            h = \frac{(t_{vuelo})^2 \cdot g}{8}
-            \]
-            
-            Donde:
-            - \(t_{vuelo}\): Es el tiempo de vuelo, calculado como la diferencia entre el fotograma de aterrizaje y el fotograma de despegue dividido por los FPS del video.
-            - \(g = 9.81 \, \text{m/s}^2\): Es la aceleración debido a la gravedad.
-            
-            La fórmula asume un movimiento parabólico ideal del salto, y el factor \(1/8\) ajusta la fórmula para considerar la simetría del vuelo en dos mitades iguales (ascenso y descenso).
-            """)
 
         except Exception as e:
             st.error(f"⚠️ Error al procesar el video: {e}")
