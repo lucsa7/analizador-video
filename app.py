@@ -2,10 +2,12 @@ import streamlit as st
 from moviepy.editor import VideoFileClip
 import pandas as pd
 import tempfile
+import matplotlib.pyplot as plt
+import io
 
 def main():
     # Título del analizador
-    st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video por Fotogramas</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video</h1>", unsafe_allow_html=True)
 
     # Subir archivo de video
     st.markdown("### 📂 Subir un archivo de video")
@@ -70,13 +72,33 @@ def main():
                     mime="text/csv"
                 )
 
-            
+                # Crear un gráfico de resultados
+                st.markdown("### 📊 Gráfico de Resultados")
+                fig, ax = plt.subplots()
+                metrics = ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)"]
+                values = [tiempo_contacto, tiempo_vuelo, altura]
+                ax.bar(metrics, values, color=["#FF5733", "#33FF57", "#3357FF"])
+                ax.set_ylabel("Valores")
+                ax.set_title("Resultados del Análisis de Salto")
+                st.pyplot(fig)
+
+                # Exportar el gráfico
+                buf = io.BytesIO()
+                plt.savefig(buf, format="png")
+                buf.seek(0)
+                st.download_button(
+                    label="Descargar gráfico como PNG",
+                    data=buf,
+                    file_name="grafico_resultados.png",
+                    mime="image/png"
+                )
 
         except Exception as e:
             st.error(f"⚠️ Error al procesar el video: {e}")
 
 if __name__ == "__main__":
     main()
+
 
 
 
