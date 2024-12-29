@@ -1,0 +1,13 @@
+[theme]
+primaryColor = "#FF5733"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F0F0F0"
+textColor = "#000000"
+
+[server]
+headless = true
+enableCORS = false
+
+[ui]
+hideToolbar = true
+hideSidebarNav = true
