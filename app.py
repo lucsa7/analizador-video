@@ -1,29 +1,12 @@
 import streamlit as st
 from moviepy.editor import VideoFileClip
 import pandas as pd
+import tempfile
 import matplotlib.pyplot as plt
 import io
-import numpy as np
-import tempfile
-
-def calcular_fuerza_tiempo(masa, velocidades, fps):
-    tiempos = []
-    fuerzas = []
-
-    for i in range(1, len(velocidades)):
-        tiempo = i / fps
-        tiempos.append(tiempo)
-
-        # Calcular aceleración
-        aceleracion = (velocidades[i] - velocidades[i - 1]) * fps
-
-        # Calcular fuerza
-        fuerza = masa * (aceleracion + 9.81)  # Incluye la gravedad
-        fuerzas.append(fuerza)
-
-    return tiempos, fuerzas
 
 def main():
+    # Título del analizador
     st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
 
     # Subir archivo de video
@@ -96,53 +79,48 @@ def main():
                 st.write(f"- **Fuerza media durante el contacto:** {fuerza_media:.2f} N")
                 st.write(f"- **Potencia promedio durante el salto:** {potencia_promedio:.2f} W")
 
-                # Curva Fuerza-Tiempo
-                velocidades = np.linspace(0, velocidad_pico, int(tiempo_contacto * fps))  # Velocidades simuladas
-                tiempos, fuerzas = calcular_fuerza_tiempo(masa_persona, velocidades, fps)
-
-                st.markdown("### 📈 Curva Fuerza-Tiempo")
-                fig, ax = plt.subplots()
-                ax.plot(tiempos, fuerzas, label="Fuerza-Tiempo", color="#FF5733")
-                ax.axhline(y=masa_persona * 9.81, color="green", linestyle="--", label="Peso del Usuario")
-                ax.set_xlabel("Tiempo (s)")
-                ax.set_ylabel("Fuerza (N)")
-                ax.set_title("Curva Fuerza-Tiempo")
-                ax.legend()
-                ax.grid()
-                st.pyplot(fig)
-
-                # Exportar datos de la curva
-                st.markdown("### 💾 Exportar Datos de la Curva")
-                data_curva = pd.DataFrame({
-                    "Tiempo (s)": tiempos,
-                    "Fuerza (N)": fuerzas
-                })
-                st.download_button(
-                    label="Descargar datos como CSV",
-                    data=data_curva.to_csv(index=False, sep=";"),
-                    file_name="curva_fuerza_tiempo.csv",
-                    mime="text/csv"
-                )
-
-                # Exportar resultados generales
-                st.markdown("### 💾 Exportar Resultados Generales")
-                data_resultados = pd.DataFrame({
+                # Exportar resultados
+                st.markdown("### 💾 Exportar resultados")
+                data = {
                     "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad pico (m/s)",
                                 "Fuerza media (N)", "Potencia promedio (W)"],
                     "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_pico, fuerza_media, potencia_promedio]
-                })
+                }
+                df = pd.DataFrame(data)
                 st.download_button(
                     label="Descargar resultados como CSV",
-                    data=data_resultados.to_csv(index=False, sep=";"),
-                    file_name="resultados_generales.csv",
+                    data=df.to_csv(index=False, sep=";"),
+                    file_name="resultados_salto.csv",
                     mime="text/csv"
                 )
+
+                # Crear gráficos individuales para cada métrica
+                st.markdown("### 📊 Gráficos Individuales de Resultados")
+
+                metrics = {
+                    "Tiempo de contacto (s)": tiempo_contacto,
+                    "Tiempo de vuelo (s)": tiempo_vuelo,
+                    "Altura (m)": altura,
+                    "Velocidad pico (m/s)": velocidad_pico,
+                    "Fuerza media (N)": fuerza_media,
+                    "Potencia promedio (W)": potencia_promedio
+                }
+
+                for metric, value in metrics.items():
+                    st.markdown(f"#### {metric}")
+                    fig, ax = plt.subplots()
+                    ax.bar([metric], [value], color="#FF5733")
+                    ax.set_ylabel("Valor")
+                    ax.set_title(metric)
+                    st.pyplot(fig)
 
         except Exception as e:
             st.error(f"⚠️ Error al procesar el video: {e}")
 
 if __name__ == "__main__":
     main()
+
+
 
 
 
