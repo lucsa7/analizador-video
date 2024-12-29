@@ -60,14 +60,13 @@ def main():
                 # Exportar resultados
                 st.markdown("### 💾 Exportar resultados")
                 data = {
-                    "Tiempo de contacto inicial (s)": [tiempo_contacto],
-                    "Tiempo de vuelo (s)": [tiempo_vuelo],
-                    "Altura estimada (m)": [altura]
+                    "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)"],
+                    "Valor": [tiempo_contacto, tiempo_vuelo, altura]
                 }
                 df = pd.DataFrame(data)
                 st.download_button(
                     label="Descargar resultados como CSV",
-                    data=df.to_csv(index=False),
+                    data=df.to_csv(index=False, sep=";"),
                     file_name="resultados_salto.csv",
                     mime="text/csv"
                 )
@@ -75,16 +74,15 @@ def main():
                 # Crear un gráfico de resultados
                 st.markdown("### 📊 Gráfico de Resultados")
                 fig, ax = plt.subplots()
-                metrics = ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)"]
-                values = [tiempo_contacto, tiempo_vuelo, altura]
-                ax.bar(metrics, values, color=["#FF5733", "#33FF57", "#3357FF"])
+                ax.bar(df["Métrica"], df["Valor"], color=["#FF5733", "#33FF57", "#3357FF"])
                 ax.set_ylabel("Valores")
                 ax.set_title("Resultados del Análisis de Salto")
+                plt.xticks(rotation=45, ha="right")
                 st.pyplot(fig)
 
                 # Exportar el gráfico
                 buf = io.BytesIO()
-                plt.savefig(buf, format="png")
+                plt.savefig(buf, format="png", bbox_inches="tight")
                 buf.seek(0)
                 st.download_button(
                     label="Descargar gráfico como PNG",
@@ -98,6 +96,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
