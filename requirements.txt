@@ -1,6 +1,5 @@
 streamlit
-opencv-python
-numpy
-streamlit
-imageio[ffmpeg]
+imageio
 pillow
+numpy
+
