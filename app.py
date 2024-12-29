@@ -51,26 +51,26 @@ def main():
                 st.error("⚠️ Asegúrate de que los fotogramas clave están en el orden correcto: inicio_contacto < final_contacto < aterrizaje.")
                 return
 
-            # Calcular tiempos y altura
-            if st.button("📐 Calcular tiempos y altura"):
+            # Calcular tiempos y métricas
+            if st.button("📐 Calcular tiempos y métricas"):
                 tiempo_contacto = (final_contacto - inicio_contacto) / fps
                 tiempo_vuelo = (aterrizaje - final_contacto) / fps
                 altura = (tiempo_vuelo ** 2 * 9.81) / 8
-                velocidad_media = altura / tiempo_vuelo
+                velocidad_pico = (2 * altura * 9.81) ** 0.5  # Fórmula para calcular la velocidad pico en el despegue
                 relacion_contacto_vuelo = tiempo_contacto / tiempo_vuelo
 
                 st.markdown("### 📈 Resultados")
                 st.write(f"- **Tiempo de contacto inicial:** {tiempo_contacto:.2f} segundos")
                 st.write(f"- **Tiempo de vuelo:** {tiempo_vuelo:.2f} segundos")
                 st.write(f"- **Altura estimada del salto:** {altura:.2f} metros")
-                st.write(f"- **Velocidad media durante el vuelo:** {velocidad_media:.2f} m/s")
+                st.write(f"- **Velocidad pico en el despegue:** {velocidad_pico:.2f} m/s")
                 st.write(f"- **Relación tiempo contacto/vuelo:** {relacion_contacto_vuelo:.2f}")
 
                 # Exportar resultados
                 st.markdown("### 💾 Exportar resultados")
                 data = {
-                    "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad media (m/s)", "Relación contacto/vuelo"],
-                    "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_media, relacion_contacto_vuelo]
+                    "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad pico (m/s)", "Relación contacto/vuelo"],
+                    "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_pico, relacion_contacto_vuelo]
                 }
                 df = pd.DataFrame(data)
                 st.download_button(
@@ -105,6 +105,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
