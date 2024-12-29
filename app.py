@@ -46,22 +46,31 @@ def main():
             final_contacto = st.number_input("Fotograma de final del contacto inicial (despegue):", min_value=0, max_value=frame_count - 1, value=0)
             aterrizaje = st.number_input("Fotograma de aterrizaje (fin del vuelo):", min_value=0, max_value=frame_count - 1, value=0)
 
+            # Validar el orden de los fotogramas clave
+            if inicio_contacto >= final_contacto or final_contacto >= aterrizaje:
+                st.error("⚠️ Asegúrate de que los fotogramas clave están en el orden correcto: inicio_contacto < final_contacto < aterrizaje.")
+                return
+
             # Calcular tiempos y altura
             if st.button("📐 Calcular tiempos y altura"):
                 tiempo_contacto = (final_contacto - inicio_contacto) / fps
                 tiempo_vuelo = (aterrizaje - final_contacto) / fps
                 altura = (tiempo_vuelo ** 2 * 9.81) / 8
+                velocidad_media = altura / tiempo_vuelo
+                relacion_contacto_vuelo = tiempo_contacto / tiempo_vuelo
 
                 st.markdown("### 📈 Resultados")
                 st.write(f"- **Tiempo de contacto inicial:** {tiempo_contacto:.2f} segundos")
                 st.write(f"- **Tiempo de vuelo:** {tiempo_vuelo:.2f} segundos")
                 st.write(f"- **Altura estimada del salto:** {altura:.2f} metros")
+                st.write(f"- **Velocidad media durante el vuelo:** {velocidad_media:.2f} m/s")
+                st.write(f"- **Relación tiempo contacto/vuelo:** {relacion_contacto_vuelo:.2f}")
 
                 # Exportar resultados
                 st.markdown("### 💾 Exportar resultados")
                 data = {
-                    "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)"],
-                    "Valor": [tiempo_contacto, tiempo_vuelo, altura]
+                    "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad media (m/s)", "Relación contacto/vuelo"],
+                    "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_media, relacion_contacto_vuelo]
                 }
                 df = pd.DataFrame(data)
                 st.download_button(
@@ -74,7 +83,7 @@ def main():
                 # Crear un gráfico de resultados
                 st.markdown("### 📊 Gráfico de Resultados")
                 fig, ax = plt.subplots()
-                ax.bar(df["Métrica"], df["Valor"], color=["#FF5733", "#33FF57", "#3357FF"])
+                ax.bar(df["Métrica"], df["Valor"], color=["#FF5733", "#33FF57", "#3357FF", "#FF33FF", "#33FFFF"])
                 ax.set_ylabel("Valores")
                 ax.set_title("Resultados del Análisis de Salto")
                 plt.xticks(rotation=45, ha="right")
@@ -96,6 +105,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
