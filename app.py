@@ -75,7 +75,7 @@ if check_password():
                 frame_height, frame_width = frame.shape[:2]
                 aspect_ratio = frame_width / frame_height
                 max_width = 800  # Ancho máximo
-                max_height = 600  # Alto máximo
+                max_height = 1000  # Alto máximo
 
                 # Calcular dimensiones proporcionales
                 if aspect_ratio > 1:  # Imagen más ancha que alta
