@@ -5,36 +5,20 @@ import tempfile
 import matplotlib.pyplot as plt
 import io
 
-# Oculta cualquier elemento no deseado
-hide_menu_style = """
+# Oculta elementos no deseados
+hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;} /* Oculta el menú de hamburguesa */
-    footer {visibility: hidden;} /* Oculta el footer */
+    footer {visibility: hidden;} /* Oculta el pie de página */
     header {visibility: hidden;} /* Oculta el encabezado */
+    .viewerBadge_container__1QSob {visibility: hidden;} /* Oculta el logotipo de Streamlit */
+    .st-bx {visibility: hidden;} /* Oculta el footer en dispositivos móviles */
     button[title="View source"] {display: none;} /* Oculta botón de "View Source" */
     button[title="Report a bug"] {display: none;} /* Oculta botón de "Report a bug" */
     button[title="Streamlit for Teams"] {display: none;} /* Oculta botón de "Streamlit for Teams" */
     </style>
-    """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
-# Oculta el botón "View Source" en la barra superior y otros elementos
-hide_menu_style = """
-    <style>
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
 """
-st.markdown(hide_menu_style, unsafe_allow_html=True)
-
-# Oculta el pie de página y el logotipo de Streamlit
-hide_footer_style = """
-    <style>
-    footer {visibility: hidden;}
-    .viewerBadge_container__1QSob {visibility: hidden;}
-    </style>
-"""
-st.markdown(hide_footer_style, unsafe_allow_html=True)
-
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 # Protección por contraseña
 def check_password():
     def password_entered():
