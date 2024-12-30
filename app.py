@@ -34,12 +34,22 @@ def check_password():
     else:
         return True
 
+# Mostrar logo según la página
+def show_logo(position="center"):
+    logo_path = "assets/image.png"  # Ruta del logo
+    if position == "center":
+        st.image(logo_path, width=300, use_column_width=False, caption=None)
+    elif position == "top-left":
+        st.sidebar.image(logo_path, width=100, use_column_width=False, caption=None)
+
 # Solo ejecuta la app si la contraseña es correcta
 if check_password():
-    # Aquí va el resto de tu código
     def main():
         # Título del analizador
         st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
+
+        # Mostrar el logo centrado
+        show_logo(position="center")
 
         # Subir archivo de video
         st.markdown("### 📂 Subir un archivo de video")
@@ -63,6 +73,9 @@ if check_password():
                 st.write(f"- **Número total de fotogramas:** {frame_count}")
                 st.write(f"- **Duración del video:** {duration:.2f} segundos")
 
+                # Mostrar el logo en la esquina superior izquierda
+                show_logo(position="top-left")
+
                 # Deslizador para seleccionar un fotograma
                 st.markdown("### 🎞️ Selecciona un fotograma")
                 frame_idx = st.slider("Selecciona un fotograma", 0, frame_count - 1, 0)
@@ -70,7 +83,7 @@ if check_password():
                 # Obtener y mostrar el fotograma seleccionado
                 frame_time = frame_idx / fps
                 frame = clip.get_frame(frame_time)
-                st.image(frame, caption=f"Fotograma {frame_idx}", use_container_width=True)
+                st.image(frame, caption=f"Fotograma {frame_idx}", use_column_width=True)
 
                 # Pedir el peso de la persona
                 st.markdown("### ⚖️ Datos del atleta")
@@ -151,3 +164,4 @@ if check_password():
 
     if __name__ == "__main__":
         main()
+
