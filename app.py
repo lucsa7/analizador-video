@@ -111,67 +111,50 @@ if check_password():
                     st.write(f"- **Fuerza media durante el contacto:** {fuerza_media:.2f} N")
                     st.write(f"- **Potencia promedio durante el salto:** {potencia_promedio:.2f} W")
 
-                    # Exportar resultados
-                    st.markdown("### 💾 Exportar resultados")
-                    data = {
-                        "Métrica": ["Tiempo de contacto (s)", "Tiempo de vuelo (s)", "Altura (m)", "Velocidad pico (m/s)",
-                                    "Fuerza media (N)", "Potencia promedio (W)"],
-                        "Valor": [tiempo_contacto, tiempo_vuelo, altura, velocidad_pico, fuerza_media, potencia_promedio]
-                    }
-                    df = pd.DataFrame(data)
-                    st.download_button(
-                        label="Descargar resultados como CSV",
-                        data=df.to_csv(index=False, sep=";"),
-                        file_name="resultados_salto.csv",
-                        mime="text/csv"
-                    )
-
-                    # Crear gráficos individuales para cada métrica
-                    st.markdown("### 📊 Gráficos Individuales de Resultados")
-
-                    metrics = {
-                        "Tiempo de contacto (s)": tiempo_contacto,
-                        "Tiempo de vuelo (s)": tiempo_vuelo,
-                        "Altura (m)": altura,
-                        "Velocidad pico (m/s)": velocidad_pico,
-                        "Fuerza media (N)": fuerza_media,
-                        "Potencia promedio (W)": potencia_promedio
-                    }
-
-                    for metric, value in metrics.items():
-                        st.markdown(f"#### {metric}")
-                        fig, ax = plt.subplots()
-                        ax.bar([metric], [value], color="#FF5733")
-                        ax.set_ylabel("Valor")
-                        ax.set_title(metric)
-                        st.pyplot(fig)
-
                     # Exportar fotograma con datos
                     if st.button("🖼️ Exportar fotograma como imagen"):
-                        img = Image.fromarray((frame * 255).astype('uint8'))
-                        draw = ImageDraw.Draw(img)
-                        text = (
-                            f"Tiempo contacto: {tiempo_contacto:.2f} s\n"
-                            f"Tiempo vuelo: {tiempo_vuelo:.2f} s\n"
-                            f"Altura: {altura:.2f} m\n"
-                            f"Velocidad pico: {velocidad_pico:.2f} m/s\n"
-                            f"Fuerza media: {fuerza_media:.2f} N\n"
-                            f"Potencia promedio: {potencia_promedio:.2f} W"
-                        )
-                        draw.text((10, 10), text, fill="white")
-                        buf = io.BytesIO()
-                        img.save(buf, format="PNG")
-                        buf.seek(0)
-                        st.download_button(
-                            label="Descargar fotograma con datos",
-                            data=buf,
-                            file_name="fotograma_con_datos.png",
-                            mime="image/png"
-                        )
+                        try:
+                            # Convertir el fotograma a imagen PIL
+                            img = Image.fromarray((frame * 255).astype('uint8'))
+
+                            # Crear un objeto Draw para añadir texto
+                            draw = ImageDraw.Draw(img)
+
+                            # Texto con los datos obtenidos
+                            text = (
+                                f"Tiempo contacto: {tiempo_contacto:.2f} s\n"
+                                f"Tiempo vuelo: {tiempo_vuelo:.2f} s\n"
+                                f"Altura: {altura:.2f} m\n"
+                                f"Velocidad pico: {velocidad_pico:.2f} m/s\n"
+                                f"Fuerza media: {fuerza_media:.2f} N\n"
+                                f"Potencia promedio: {potencia_promedio:.2f} W"
+                            )
+
+                            # Configurar fuente (usar fuente predeterminada de PIL)
+                            font = ImageFont.load_default()
+
+                            # Añadir texto a la imagen
+                            draw.multiline_text((10, 10), text, fill="white", font=font)
+
+                            # Guardar la imagen en un buffer de memoria
+                            buf = io.BytesIO()
+                            img.save(buf, format="PNG")
+                            buf.seek(0)
+
+                            # Crear el botón para descargar la imagen
+                            st.download_button(
+                                label="Descargar fotograma con datos",
+                                data=buf,
+                                file_name="fotograma_con_datos.png",
+                                mime="image/png"
+                            )
+                        except Exception as e:
+                            st.error(f"⚠️ Error al exportar el fotograma: {e}")
 
             except Exception as e:
                 st.error(f"⚠️ Error al procesar el video: {e}")
 
     if __name__ == "__main__":
         main()
+
 
