@@ -3,7 +3,7 @@ imageio[ffmpeg]
 pillow
 moviepy
 matplotlib
-
+numpy
 
 
 
