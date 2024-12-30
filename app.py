@@ -5,26 +5,24 @@ import tempfile
 import matplotlib.pyplot as plt
 import io
 
-# Estilo para ocultar elementos no deseados
+# Oculta elementos no deseados sin afectar el cuadro de contraseña
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;} /* Oculta el menú de hamburguesa */
     footer {visibility: hidden;} /* Oculta el pie de página */
     header {visibility: hidden;} /* Oculta el encabezado */
-    .viewerBadge_container__1QSob {visibility: hidden;} /* Oculta el logotipo de Streamlit */
+    .viewerBadge_container__1QSob {display: none;} /* Oculta logotipo de Streamlit */
     .stActionButton {visibility: hidden;} /* Oculta botones específicos */
-    .stMarkdownContainer {visibility: hidden;} /* Oculta contenedores de Markdown */
-    .st-bx {display: none;} /* Oculta elementos en dispositivos móviles */
-    .stSidebar {display: none;} /* Oculta la barra lateral */
-    button[title="View source"] {display: none;} /* Oculta botón de "View Source" */
-    button[title="Report a bug"] {display: none;} /* Oculta botón de "Report a bug" */
-    button[title="Streamlit for Teams"] {display: none;} /* Oculta botón de "Streamlit for Teams" */
-    [data-testid="stToolbar"] {display: none !important;} /* Oculta la barra de herramientas */
-    [data-testid="stFooter"] {display: none !important;} /* Oculta el footer */
-    [data-testid="stDecoration"] {display: none !important;} /* Oculta elementos decorativos */
+    button[title="View source"], button[title="Report a bug"], button[title="Streamlit for Teams"] {
+        display: none; /* Oculta botones extra */
+    }
+    [data-testid="stDecoration"], [data-testid="stToolbar"], [data-testid="stFooter"] {
+        display: none !important; /* Oculta elementos decorativos */
+    }
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+
 # Protección por contraseña
 def check_password():
     def password_entered():
