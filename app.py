@@ -71,8 +71,8 @@ if check_password():
                 frame_time = frame_idx / fps
                 frame = clip.get_frame(frame_time)
 
-                # Ajustar dimensiones del fotograma a las proporciones originales del video
-                st.image(frame, caption=f"Fotograma {frame_idx}", use_column_width=False)
+                # Mostrar la imagen con proporciones correctas
+                st.image(frame, caption=f"Fotograma {frame_idx}", use_container_width=True)
 
                 # Pedir el peso de la persona
                 st.markdown("### ⚖️ Datos del atleta")
