@@ -71,22 +71,8 @@ if check_password():
                 frame_time = frame_idx / fps
                 frame = clip.get_frame(frame_time)
 
-                # Ajustar dimensiones para mostrar el fotograma más grande
-                frame_height, frame_width = frame.shape[:2]
-                aspect_ratio = frame_width / frame_height
-                max_width = 800  # Ancho máximo
-                max_height = 1000  # Alto máximo
-
-                # Calcular dimensiones proporcionales
-                if aspect_ratio > 1:  # Imagen más ancha que alta
-                    resized_width = max_width
-                    resized_height = int(max_width / aspect_ratio)
-                else:  # Imagen más alta que ancha
-                    resized_height = max_height
-                    resized_width = int(max_height * aspect_ratio)
-
-                # Mostrar el fotograma redimensionado
-                st.image(frame, caption=f"Fotograma {frame_idx}", width=resized_width, use_container_width=False)
+                # Ajustar dimensiones del fotograma a las proporciones originales del video
+                st.image(frame, caption=f"Fotograma {frame_idx}", use_column_width=False)
 
                 # Pedir el peso de la persona
                 st.markdown("### ⚖️ Datos del atleta")
@@ -167,6 +153,7 @@ if check_password():
 
     if __name__ == "__main__":
         main()
+
 
 
 
