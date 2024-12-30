@@ -34,16 +34,9 @@ def check_password():
     else:
         return True
 
-# Ajustar la orientación y relación de aspecto del video
-def adjust_frame(frame, aspect_ratio):
-    import cv2
-    height, width, _ = frame.shape
-    new_width = int(height * aspect_ratio)
-    resized_frame = cv2.resize(frame, (new_width, height))
-    return resized_frame
-
 # Solo ejecuta la app si la contraseña es correcta
 if check_password():
+    # Aquí va el resto de tu código
     def main():
         # Título del analizador
         st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
@@ -61,18 +54,14 @@ if check_password():
 
                 # Procesar el video con MoviePy
                 clip = VideoFileClip(temp_video_path)
-
-                # Obtener propiedades del video
                 fps = clip.fps
                 frame_count = int(clip.duration * fps)
                 duration = clip.duration
-                aspect_ratio = clip.size[0] / clip.size[1]
 
                 st.markdown(f"**📊 Propiedades del Video**")
                 st.write(f"- **Frames por segundo (FPS):** {fps}")
                 st.write(f"- **Número total de fotogramas:** {frame_count}")
                 st.write(f"- **Duración del video:** {duration:.2f} segundos")
-                st.write(f"- **Relación de aspecto:** {aspect_ratio:.2f} (ancho:alto)")
 
                 # Deslizador para seleccionar un fotograma
                 st.markdown("### 🎞️ Selecciona un fotograma")
@@ -81,7 +70,6 @@ if check_password():
                 # Obtener y mostrar el fotograma seleccionado
                 frame_time = frame_idx / fps
                 frame = clip.get_frame(frame_time)
-                frame = adjust_frame(frame, aspect_ratio)
                 st.image(frame, caption=f"Fotograma {frame_idx}", use_container_width=True)
 
                 # Pedir el peso de la persona
@@ -163,4 +151,3 @@ if check_password():
 
     if __name__ == "__main__":
         main()
-
