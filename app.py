@@ -5,12 +5,15 @@ import tempfile
 import matplotlib.pyplot as plt
 import io
 
-# Oculta el botón "View Source" en la barra superior
+# Oculta cualquier elemento no deseado
 hide_menu_style = """
     <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
+    #MainMenu {visibility: hidden;} /* Oculta el menú de hamburguesa */
+    footer {visibility: hidden;} /* Oculta el footer */
+    header {visibility: hidden;} /* Oculta el encabezado */
+    button[title="View source"] {display: none;} /* Oculta botón de "View Source" */
+    button[title="Report a bug"] {display: none;} /* Oculta botón de "Report a bug" */
+    button[title="Streamlit for Teams"] {display: none;} /* Oculta botón de "Streamlit for Teams" */
     </style>
     """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
@@ -36,7 +39,6 @@ def check_password():
 
 # Solo ejecuta la app si la contraseña es correcta
 if check_password():
-    # Aquí va el resto de tu código
     def main():
         # Título del analizador
         st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
@@ -153,7 +155,3 @@ if check_password():
 
     if __name__ == "__main__":
         main()
-
-
-
-
