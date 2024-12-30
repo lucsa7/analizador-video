@@ -26,6 +26,7 @@ def check_password():
             st.session_state["authenticated"] = False
 
     if "authenticated" not in st.session_state:
+        # Pedir contraseña al usuario
         st.text_input("Por favor, ingresa la contraseña:", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["authenticated"]:
@@ -91,15 +92,15 @@ if check_password():
                     tiempo_contacto = (final_contacto - inicio_contacto) / fps
                     tiempo_vuelo = (aterrizaje - final_contacto) / fps
                     altura = (tiempo_vuelo ** 2 * 9.81) / 8
-                    velocidad_pico = (2 * altura * 9.81) ** 0.5
+                    velocidad_pico = (2 * altura * 9.81) ** 0.5  # Fórmula para calcular la velocidad pico en el despegue
 
                     # Cálculo de fuerza media
-                    masa_persona = peso_persona / 9.81
+                    masa_persona = peso_persona / 9.81  # Masa en kg
                     aceleracion_media = velocidad_pico / tiempo_contacto
-                    fuerza_media = masa_persona * (aceleracion_media + 9.81)
+                    fuerza_media = masa_persona * (aceleracion_media + 9.81)  # Newtons
 
                     # Cálculo de potencia promedio
-                    potencia_promedio = fuerza_media * velocidad_pico
+                    potencia_promedio = fuerza_media * velocidad_pico  # Watts
 
                     # Mostrar resultados
                     st.markdown("### 📈 Resultados")
@@ -125,16 +126,38 @@ if check_password():
                         mime="text/csv"
                     )
 
-                    # Exportar fotograma con datos como imagen
+                    # Crear gráficos individuales para cada métrica
+                    st.markdown("### 📊 Gráficos Individuales de Resultados")
+
+                    metrics = {
+                        "Tiempo de contacto (s)": tiempo_contacto,
+                        "Tiempo de vuelo (s)": tiempo_vuelo,
+                        "Altura (m)": altura,
+                        "Velocidad pico (m/s)": velocidad_pico,
+                        "Fuerza media (N)": fuerza_media,
+                        "Potencia promedio (W)": potencia_promedio
+                    }
+
+                    for metric, value in metrics.items():
+                        st.markdown(f"#### {metric}")
+                        fig, ax = plt.subplots()
+                        ax.bar([metric], [value], color="#FF5733")
+                        ax.set_ylabel("Valor")
+                        ax.set_title(metric)
+                        st.pyplot(fig)
+
+                    # Exportar fotograma con datos
                     if st.button("🖼️ Exportar fotograma como imagen"):
-                        img = Image.fromarray(frame)
+                        img = Image.fromarray((frame * 255).astype('uint8'))
                         draw = ImageDraw.Draw(img)
-                        text = f"""Tiempo contacto: {tiempo_contacto:.2f} s
-Tiempo vuelo: {tiempo_vuelo:.2f} s
-Altura: {altura:.2f} m
-Velocidad pico: {velocidad_pico:.2f} m/s
-Fuerza media: {fuerza_media:.2f} N
-Potencia promedio: {potencia_promedio:.2f} W"""
+                        text = (
+                            f"Tiempo contacto: {tiempo_contacto:.2f} s\n"
+                            f"Tiempo vuelo: {tiempo_vuelo:.2f} s\n"
+                            f"Altura: {altura:.2f} m\n"
+                            f"Velocidad pico: {velocidad_pico:.2f} m/s\n"
+                            f"Fuerza media: {fuerza_media:.2f} N\n"
+                            f"Potencia promedio: {potencia_promedio:.2f} W"
+                        )
                         draw.text((10, 10), text, fill="white")
                         buf = io.BytesIO()
                         img.save(buf, format="PNG")
