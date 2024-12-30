@@ -14,7 +14,14 @@ hide_menu_style = """
     </style>
     """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
-
+# Agregar un favicon personalizado
+favicon_path = "C:/Users/lucsa/OneDrive/Escritorio/app de salto/assets/saltos.png"
+st.markdown(
+    f"""
+    <link rel="icon" href="data:image/png;base64,{st.file_uploader(favicon_path)}" type="image/png">
+    """,
+    unsafe_allow_html=True,
+)
 # Protección por contraseña
 def check_password():
     def password_entered():
