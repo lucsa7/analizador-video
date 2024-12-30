@@ -1,0 +1,11 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
+
+[global]
+showWarningOnDirectExecution = false
+
+[ui]
+hideMenu = true
