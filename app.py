@@ -4,6 +4,7 @@ import pandas as pd
 import tempfile
 import matplotlib.pyplot as plt
 import io
+from PIL import Image, ImageDraw, ImageFont
 
 # Oculta el botón "View Source" en la barra superior
 hide_menu_style = """
@@ -25,7 +26,6 @@ def check_password():
             st.session_state["authenticated"] = False
 
     if "authenticated" not in st.session_state:
-        # Pedir contraseña al usuario
         st.text_input("Por favor, ingresa la contraseña:", type="password", on_change=password_entered, key="password")
         return False
     elif not st.session_state["authenticated"]:
@@ -36,7 +36,6 @@ def check_password():
 
 # Solo ejecuta la app si la contraseña es correcta
 if check_password():
-    # Aquí va el resto de tu código
     def main():
         # Título del analizador
         st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
@@ -92,15 +91,15 @@ if check_password():
                     tiempo_contacto = (final_contacto - inicio_contacto) / fps
                     tiempo_vuelo = (aterrizaje - final_contacto) / fps
                     altura = (tiempo_vuelo ** 2 * 9.81) / 8
-                    velocidad_pico = (2 * altura * 9.81) ** 0.5  # Fórmula para calcular la velocidad pico en el despegue
+                    velocidad_pico = (2 * altura * 9.81) ** 0.5
 
                     # Cálculo de fuerza media
-                    masa_persona = peso_persona / 9.81  # Masa en kg
+                    masa_persona = peso_persona / 9.81
                     aceleracion_media = velocidad_pico / tiempo_contacto
-                    fuerza_media = masa_persona * (aceleracion_media + 9.81)  # Newtons
+                    fuerza_media = masa_persona * (aceleracion_media + 9.81)
 
                     # Cálculo de potencia promedio
-                    potencia_promedio = fuerza_media * velocidad_pico  # Watts
+                    potencia_promedio = fuerza_media * velocidad_pico
 
                     # Mostrar resultados
                     st.markdown("### 📈 Resultados")
@@ -126,28 +125,30 @@ if check_password():
                         mime="text/csv"
                     )
 
-                    # Crear gráficos individuales para cada métrica
-                    st.markdown("### 📊 Gráficos Individuales de Resultados")
-
-                    metrics = {
-                        "Tiempo de contacto (s)": tiempo_contacto,
-                        "Tiempo de vuelo (s)": tiempo_vuelo,
-                        "Altura (m)": altura,
-                        "Velocidad pico (m/s)": velocidad_pico,
-                        "Fuerza media (N)": fuerza_media,
-                        "Potencia promedio (W)": potencia_promedio
-                    }
-
-                    for metric, value in metrics.items():
-                        st.markdown(f"#### {metric}")
-                        fig, ax = plt.subplots()
-                        ax.bar([metric], [value], color="#FF5733")
-                        ax.set_ylabel("Valor")
-                        ax.set_title(metric)
-                        st.pyplot(fig)
+                    # Exportar fotograma con datos como imagen
+                    if st.button("🖼️ Exportar fotograma como imagen"):
+                        img = Image.fromarray(frame)
+                        draw = ImageDraw.Draw(img)
+                        text = f"""Tiempo contacto: {tiempo_contacto:.2f} s
+Tiempo vuelo: {tiempo_vuelo:.2f} s
+Altura: {altura:.2f} m
+Velocidad pico: {velocidad_pico:.2f} m/s
+Fuerza media: {fuerza_media:.2f} N
+Potencia promedio: {potencia_promedio:.2f} W"""
+                        draw.text((10, 10), text, fill="white")
+                        buf = io.BytesIO()
+                        img.save(buf, format="PNG")
+                        buf.seek(0)
+                        st.download_button(
+                            label="Descargar fotograma con datos",
+                            data=buf,
+                            file_name="fotograma_con_datos.png",
+                            mime="image/png"
+                        )
 
             except Exception as e:
                 st.error(f"⚠️ Error al procesar el video: {e}")
 
     if __name__ == "__main__":
         main()
+
