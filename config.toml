@@ -11,3 +11,4 @@ enableCORS = false
 [ui]
 hideToolbar = true
 hideSidebarNav = true
+
