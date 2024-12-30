@@ -5,6 +5,18 @@ import tempfile
 import matplotlib.pyplot as plt
 import io
 
+
+# Oculta el botón "View Source" en la barra superior
+hide_menu_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+    """
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+
 def main():
     # Título del analizador
     st.markdown("<h1 style='text-align: center; color: #FF5733;'>🔍 Analizador de Video y Métricas Físicas</h1>", unsafe_allow_html=True)
